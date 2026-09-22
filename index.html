@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="今日习惯">
+  <meta name="theme-color" content="#f5f2e9">
+  <meta name="description" content="一个简洁、专注今天的习惯打卡网页。">
+  <title>今日习惯</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="page-orb page-orb--one" aria-hidden="true"></div>
+  <div class="page-orb page-orb--two" aria-hidden="true"></div>
+
+  <div class="app-shell">
+    <header class="hero">
+      <div class="hero-meta">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false">
+            <path d="M6.5 12.5 10 16l7.5-8"></path>
+          </svg>
+        </span>
+        <time id="todayDate"></time>
+        <button class="share-button" id="shareButton" type="button" aria-label="分享这个应用">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <path d="m8.6 10.5 6.8-4M8.6 13.5l6.8 4"></path>
+          </svg>
+          <span>分享</span>
+        </button>
+      </div>
+
+      <h1>今天，也要好好坚持。</h1>
+      <p class="hero-subtitle">完成一件，就为自己点亮一盏小灯。</p>
+
+      <section class="progress-card" aria-labelledby="progressTitle">
+        <div class="progress-heading">
+          <div>
+            <span class="progress-kicker" id="progressTitle">今日进度</span>
+            <strong id="progressText" aria-live="polite">已完成 0 / 共 0 项</strong>
+          </div>
+          <span class="progress-percent" id="progressPercent">0%</span>
+        </div>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <p class="progress-message" id="progressMessage">添加一个小习惯，从今天开始。</p>
+      </section>
+    </header>
+
+    <main>
+      <section class="habits-section" aria-labelledby="habitsTitle">
+        <div class="section-heading">
+          <div>
+            <h2 id="habitsTitle">我的习惯</h2>
+            <p id="sectionHint">每天结束前，回来看看今天完成了多少。</p>
+          </div>
+          <span class="remaining-badge" id="remainingBadge">0 项待完成</span>
+        </div>
+
+        <form class="add-form" id="addHabitForm" novalidate>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+            <label class="sr-only" for="habitInput">添加新习惯</label>
+            <input
+              id="habitInput"
+              name="habit"
+              type="text"
+              maxlength="30"
+              autocomplete="off"
+              placeholder="例如：喝水、运动、阅读"
+              aria-describedby="addHabitError"
+            >
+          </div>
+          <button class="add-button" type="submit">添加习惯</button>
+          <p class="form-error" id="addHabitError" role="alert"></p>
+        </form>
+
+        <div class="habit-list" id="habitList" role="list" aria-label="今天的习惯"></div>
+
+        <div class="empty-state" id="emptyState">
+          <div class="empty-illustration" aria-hidden="true">
+            <svg viewBox="0 0 72 72" focusable="false">
+              <circle cx="36" cy="36" r="25"></circle>
+              <path d="M24 37.5 32 45l17-19"></path>
+              <path class="empty-spark" d="M57 17v7M53.5 20.5h7"></path>
+            </svg>
+          </div>
+          <h3>从一个简单的习惯开始</h3>
+          <p>先写下你最想坚持的一件事，完成时轻轻点一下。</p>
+          <button class="empty-action" id="emptyAddButton" type="button">添加第一个习惯</button>
+        </div>
+
+        <div class="all-done" id="allDone" role="status" hidden>
+          <span class="all-done-icon" aria-hidden="true">✓</span>
+          <div>
+            <strong>今天的习惯都完成啦</strong>
+            <p>做得很好，明天也在这里见。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>记录只保存在当前浏览器中 · 每一天都是新的开始</footer>
+  </div>
+
+  <dialog class="modal" id="editDialog" aria-labelledby="editDialogTitle">
+    <form class="modal-card" id="editForm" novalidate>
+      <button class="modal-close" id="closeEditButton" type="button" aria-label="关闭">×</button>
+      <span class="modal-kicker">编辑习惯</span>
+      <h2 id="editDialogTitle">换个名字</h2>
+      <p class="modal-description">让这个名字更贴近你想坚持的事情。</p>
+      <label for="editHabitInput">习惯名称</label>
+      <input id="editHabitInput" type="text" maxlength="30" autocomplete="off" aria-describedby="editHabitError">
+      <p class="form-error modal-error" id="editHabitError" role="alert"></p>
+      <div class="modal-actions">
+        <button class="button-secondary" id="cancelEditButton" type="button">取消</button>
+        <button class="button-primary" type="submit">保存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog class="modal" id="deleteDialog" aria-labelledby="deleteDialogTitle">
+    <form class="modal-card modal-card--compact" id="deleteForm">
+      <span class="modal-kicker modal-kicker--danger">删除习惯</span>
+      <h2 id="deleteDialogTitle">确定要删除吗？</h2>
+      <p class="modal-description" id="deleteDialogText"></p>
+      <div class="modal-actions">
+        <button class="button-secondary" id="cancelDeleteButton" type="button">保留</button>
+        <button class="button-danger" type="submit">删除</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
